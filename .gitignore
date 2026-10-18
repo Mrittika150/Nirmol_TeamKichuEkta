@@ -1,0 +1,8 @@
+node_modules/
+.env*
+!.env.example
+*.env.local
+ml/data/
+ml/artifacts/*.bin
+__pycache__/
+.venv/

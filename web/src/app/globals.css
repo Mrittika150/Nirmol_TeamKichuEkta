@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/* Nirmol air theme: clean-air teal on a soft sky canvas. Flat colour only, no gradients.
+   Light is the default; dark follows the system unless the viewer picks a theme. */
+:root {
+  color-scheme: light;
+  --background: #f3f8f8;
+  --foreground: #0f2a2e;
+  --card: #ffffff;
+  --soft: #eaf4f3;
+  --border: #dbe8e7;
+  --muted: #4a6266;
+  --accent: #0f766e;
+  --primary: #0f766e;
+  --primary-ink: #ffffff;
+  --sidebar: #115e59;
+  --sidebar-ink: #f0fdfa;
+  --sidebar-hover: #0f4f4b;
+  --sidebar-active: #ffffff;
+  --sidebar-active-ink: #115e59;
+  --hero: #0f766e;
+  --hero-ink: #ffffff;
+  --hero-muted: #ccfbf1;
+  --hero-chip: #0d655e;
+  --tile-teal: #e6f7f5;  --tile-teal-ink: #0f766e;
+  --tile-sky: #e0f2fe;   --tile-sky-ink: #0369a1;
+  --tile-leaf: #ecfccb;  --tile-leaf-ink: #3f6212;
+  --tile-sun: #fef3c7;   --tile-sun-ink: #92400e;
+  --warn-bg: #fffbeb;    --warn-border: #f2d38a;
+  --shadow: 0 1px 2px rgb(15 42 46 / 0.05), 0 2px 8px rgb(15 42 46 / 0.04);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0b1416;
+  --foreground: #e3eeee;
+  --card: #111d20;
+  --soft: #16262a;
+  --border: #223639;
+  --muted: #9db1b3;
+  --accent: #5eead4;
+  --primary: #0f766e;
+  --primary-ink: #ffffff;
+  --sidebar: #0d2f2d;
+  --sidebar-ink: #e6fbf7;
+  --sidebar-hover: #134440;
+  --sidebar-active: #e6fbf7;
+  --sidebar-active-ink: #0d3b38;
+  --hero: #115e59;
+  --hero-ink: #ffffff;
+  --hero-muted: #ccfbf1;
+  --hero-chip: #0d4c48;
+  --tile-teal: #12302f;  --tile-teal-ink: #5eead4;
+  --tile-sky: #0f2a3a;   --tile-sky-ink: #7dd3fc;
+  --tile-leaf: #1c2a12;  --tile-leaf-ink: #bef264;
+  --tile-sun: #33260d;   --tile-sun-ink: #fcd34d;
+  --warn-bg: #2a210c;    --warn-border: #6b5418;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #0b1416;
+    --foreground: #e3eeee;
+    --card: #111d20;
+    --soft: #16262a;
+    --border: #223639;
+    --muted: #9db1b3;
+    --accent: #5eead4;
+    --primary: #0f766e;
+    --primary-ink: #ffffff;
+    --sidebar: #0d2f2d;
+    --sidebar-ink: #e6fbf7;
+    --sidebar-hover: #134440;
+    --sidebar-active: #e6fbf7;
+    --sidebar-active-ink: #0d3b38;
+    --hero: #115e59;
+    --hero-ink: #ffffff;
+    --hero-muted: #ccfbf1;
+    --hero-chip: #0d4c48;
+    --tile-teal: #12302f;  --tile-teal-ink: #5eead4;
+    --tile-sky: #0f2a3a;   --tile-sky-ink: #7dd3fc;
+    --tile-leaf: #1c2a12;  --tile-leaf-ink: #bef264;
+    --tile-sun: #33260d;   --tile-sun-ink: #fcd34d;
+    --warn-bg: #2a210c;    --warn-border: #6b5418;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter), var(--font-bengali), system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), var(--font-bengali), system-ui, sans-serif;
+}
+
+input:is([type="date"], [type="datetime-local"]) { color-scheme: inherit; }
+
+/* Surfaces (components layer, so Tailwind utilities like `hidden` still win) */
+@layer components {
+.panel, .community-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.community-card { padding: 1.25rem; display: grid; gap: 0.8rem; }
+.icon-tile img { object-fit: contain; }
+.icon-tile { display: inline-grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; border-radius: 0.75rem; }
+.icon-tile.teal { background: var(--tile-teal); color: var(--tile-teal-ink); }
+.icon-tile.sky { background: var(--tile-sky); color: var(--tile-sky-ink); }
+.icon-tile.leaf { background: var(--tile-leaf); color: var(--tile-leaf-ink); }
+.icon-tile.sun { background: var(--tile-sun); color: var(--tile-sun-ink); }
+.warn-note { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 0.75rem; }
+
+}
+
+/* One shared content width (header, tab bar and pages): full width minus a margin, capped. */
+.shell-width { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+@media (min-width: 640px) { .shell-width { width: min(100% - 3rem, 76rem); } }
+
+/* Group headings sit inside their box like other card titles, not on the border line. */
+fieldset > legend { float: left; width: 100%; padding: 0; margin-bottom: 0.5rem; }
+fieldset > legend + * { clear: both; }
+
+/* Actions */
+.dashboard-primary, .account-primary { color: var(--primary-ink); background: var(--primary); }
+.dashboard-primary:hover, .account-primary:hover { background: #115e59; }
+.dashboard :is(button, select, a):focus-visible,
+.app-shell :is(button, a):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.account-page :is(button, select, input, a):focus-visible { outline: 3px solid var(--foreground); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard .animate-pulse { animation: none; }
+}
+
+/* App shell: solid sidebar on large screens, scrollable tab strip below. */
+.app-sidebar { background: var(--sidebar); color: var(--sidebar-ink); }
+.app-nav a { color: var(--sidebar-ink); }
+.app-nav a:hover { background: var(--sidebar-hover); }
+.app-nav a[aria-current="page"] { background: var(--sidebar-active); color: var(--sidebar-active-ink); font-weight: 600; }
+.app-nav { scrollbar-width: none; }
+.app-nav::-webkit-scrollbar { display: none; }
+/* Draw the keyboard focus ring inside the tab so the scrolling row never clips it. */
+.app-shell .app-nav a:focus-visible, .app-shell .app-utility:focus-visible { outline-offset: -3px; }
+.app-utility { color: var(--sidebar-ink); }
+.app-utility:hover { background: var(--sidebar-hover); }
+.app-utility[aria-current="page"] { background: var(--sidebar-active); color: var(--sidebar-active-ink); }
+@media (min-width: 1024px) { .app-nav[data-more] { mask-image: none; } }
+.app-nav[data-more="r"] { mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+.app-nav[data-more="l"] { mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent); }
+.app-nav[data-more="lr"] { mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
+
+/* Community / shared controls */
+.community-button { min-height: 44px; border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.5rem 0.9rem; font-weight: 600; font-size: 0.875rem; background: var(--card); }
+.community-button:hover { background: var(--soft); }
+.community-button:disabled { opacity: 0.6; }
+/* Navigation links (Back to dashboard, Community/Moderation links) look like buttons, not bare text. */
+.back-link, .community-link { display: inline-flex; align-items: center; gap: 0.4rem; width: fit-content; min-height: 44px; padding: 0.45rem 0.9rem; border: 1px solid var(--border); border-radius: 0.6rem; background: var(--card); color: var(--foreground); font-size: 0.875rem; font-weight: 600; text-decoration: none; }
+.back-link:hover, .community-link:hover { background: var(--soft); border-color: var(--accent); }
+.community-input { width: 100%; min-width: 0; min-height: 44px; margin-top: 0.3rem; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 0.6rem; background: var(--background); color: var(--foreground); }
+.community-page :is(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.community-canvas.leaflet-container { background: #e8f0ed; color: #0f1b2d; z-index: 0; border-radius: 0.75rem; }
+.community-canvas .community-marker { display: grid; place-items: center; background: #0f766e; color: white; border: 3px solid white; border-radius: 50%; font-size: 14px; font-weight: 700; box-shadow: 0 1px 5px #1236; }
+.community-canvas .community-marker.selected { background: #7e3b12; }
+.community-canvas .leaflet-control-attribution { background: #fff; color: #253b46; }
+.community-canvas .leaflet-control-attribution a { color: #075c70; }
+.community-page [hidden] { display: none !important; }
+.advisor-intro { border-top: 4px solid var(--primary); }
+.advisor-answer { border-left: 4px solid var(--primary); }

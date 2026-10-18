@@ -1,0 +1,45 @@
+name: Hourly forecast
+
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nirmol-forecast-dhaka
+  cancel-in-progress: false
+
+jobs:
+  forecast:
+    # Opt in only after the migration/RPC and manifest reader are verified.
+    if: ${{ vars.NIRMOL_ATOMIC_PUBLISHER_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: jobs/requirements.txt
+      # Actions string equality ignores case. Reject non-exact values before
+      # any step receives publication secrets; Python's main/save guards remain.
+      - run: 'python -c "import os, sys; sys.exit(os.environ.get(''NIRMOL_ATOMIC_PUBLISHER_ENABLED'') != ''true'')"'
+        env:
+          NIRMOL_ATOMIC_PUBLISHER_ENABLED: ${{ vars.NIRMOL_ATOMIC_PUBLISHER_ENABLED }}
+      - run: 'python -m pip install --require-hashes --only-binary=:all: -r jobs/requirements.txt'
+      - run: python -m pip check
+      - run: python -B -m unittest discover -s jobs/tests
+      # Controlled native inference only; no providers, credentials or publication.
+      - run: python -B jobs/forecast_runtime.py
+      - run: python jobs/refresh_forecast.py
+        env:
+          # Forward the operator's actual value; never hardcode an enabling default.
+          NIRMOL_ATOMIC_PUBLISHER_ENABLED: ${{ vars.NIRMOL_ATOMIC_PUBLISHER_ENABLED }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
